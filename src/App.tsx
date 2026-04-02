@@ -11,6 +11,12 @@ import { MOCK_POLICIES } from "./data";
 import type { PageState, Policy } from "./types";
 import "./App.css";
 
+interface KakaoUser {
+  id: string;
+  email: string;
+  nickname?: string;
+}
+
 function App() {
   const [currentPage, setCurrentPage] = useState<PageState>("main");
   const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
@@ -19,6 +25,7 @@ function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [kakaoUser, setKakaoUser] = useState<KakaoUser | null>(null);
   const [savedPolicies, setSavedPolicies] = useState<number[]>([]);
 
   const handleSearch = (region: string, category: string) => {
@@ -52,6 +59,19 @@ function App() {
     else setCurrentPage("main");
   };
 
+  // 카카오 로그인 성공 시 호출
+  const handleKakaoLogin = () => {
+    // 실제 OAuth 연동 시 카카오에서 받아온 유저 정보로 교체
+    setKakaoUser({
+      id: "seeun0507",
+      email: "kwonstella0507@gmail.com",
+      nickname: "seeun0507",
+    });
+    setIsLoggedIn(true);
+    setIsLoginOpen(false);
+    setCurrentPage("myPage");
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header
@@ -61,6 +81,8 @@ function App() {
         onNavigate={setCurrentPage}
         onBack={handleBack}
         onSearchClick={() => setIsSearchOpen(true)}
+        isLoggedIn={isLoggedIn}
+        onLoginClick={() => setIsLoginOpen(true)}
       />
 
       <main className="flex-1">
@@ -83,15 +105,13 @@ function App() {
             isSaved={savedPolicies.includes(selectedPolicy.id)}
           />
         )}
-        {currentPage === "myPage" && (
+        {currentPage === "myPage" && isLoggedIn && kakaoUser && (
           <MyPage
-            isLoggedIn={isLoggedIn}
+            user={kakaoUser}
             savedPolicies={savedPolicies}
             allPolicies={MOCK_POLICIES}
             onPolicyClick={handlePolicyClick}
             onSave={handleSave}
-            onLogout={() => setIsLoggedIn(false)}
-            onLoginClick={() => setIsLoginOpen(true)}
           />
         )}
       </main>
@@ -106,10 +126,7 @@ function App() {
       <LoginPromptModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
-        onKakaoLogin={() => {
-          setIsLoggedIn(true);
-          setIsLoginOpen(false);
-        }}
+        onKakaoLogin={handleKakaoLogin}
       />
     </div>
   );
