@@ -2,8 +2,9 @@ import React from "react";
 import { ArrowLeftIcon } from "lucide-react";
 import { HoneyDdukCharacter } from "./HoneyDdukCharacter";
 import Logo from "../assets/logo.svg";
-/* import type { PageState } from "../types"; */
+
 type PageState = "main" | "policyList" | "policyDetail" | "myPage";
+
 interface HeaderProps {
   title?: string;
   showBack?: boolean;
@@ -11,7 +12,10 @@ interface HeaderProps {
   currentPage: PageState;
   onNavigate: (page: PageState) => void;
   onSearchClick: () => void;
+  isLoggedIn: boolean;
+  onLoginClick: () => void;
 }
+
 export function Header({
   title,
   showBack = false,
@@ -19,6 +23,8 @@ export function Header({
   currentPage,
   onNavigate,
   onSearchClick,
+  isLoggedIn,
+  onLoginClick,
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-honey-100 shadow-sm">
@@ -65,6 +71,7 @@ export function Header({
               <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-honey-500 rounded-full" />
             )}
           </button>
+
           <button
             onClick={onSearchClick}
             className={`font-heading text-lg relative transition-colors ${
@@ -78,22 +85,33 @@ export function Header({
               <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-honey-500 rounded-full" />
             )}
           </button>
-          <button
-            onClick={() => onNavigate("myPage")}
-            className={`font-heading text-lg relative transition-colors ${
-              currentPage === "myPage"
-                ? "text-honey-500"
-                : "text-warm-400 hover:text-warm-600"
-            }`}
-          >
-            마이페이지
-            {currentPage === "myPage" && (
-              <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-honey-500 rounded-full" />
-            )}
-          </button>
+
+          {/* 로그인 상태에 따라 버튼 전환 */}
+          {isLoggedIn ? (
+            <button
+              onClick={() => onNavigate("myPage")}
+              className={`font-heading text-lg relative transition-colors ${
+                currentPage === "myPage"
+                  ? "text-honey-500"
+                  : "text-warm-400 hover:text-warm-600"
+              }`}
+            >
+              마이페이지
+              {currentPage === "myPage" && (
+                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-honey-500 rounded-full" />
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="font-heading text-lg relative transition-colors text-warm-400 hover:text-warm-600"
+            >
+              로그인하기
+            </button>
+          )}
         </nav>
 
-        {/* Mobile Nav Toggle (Simplified for this scope, relying on buttons in pages if needed, but we assume web-first now) */}
+        {/* Mobile Nav */}
         <div className="sm:hidden flex items-center gap-4">
           <button
             onClick={onSearchClick}
@@ -101,12 +119,21 @@ export function Header({
           >
             찾기
           </button>
-          <button
-            onClick={() => onNavigate("myPage")}
-            className="text-warm-500 font-heading"
-          >
-            마이
-          </button>
+          {isLoggedIn ? (
+            <button
+              onClick={() => onNavigate("myPage")}
+              className="text-warm-500 font-heading"
+            >
+              마이
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="text-warm-500 font-heading"
+            >
+              로그인
+            </button>
+          )}
         </div>
       </div>
     </header>
