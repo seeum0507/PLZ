@@ -1,4 +1,3 @@
-import React from "react";
 import { SparklesIcon, TargetIcon, BookmarkIcon } from "lucide-react";
 import { HoneyDdukCharacter } from "../components/HoneyDdukCharacter";
 interface MainPageProps {
