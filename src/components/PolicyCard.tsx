@@ -1,5 +1,4 @@
 import React from "react";
-import { BookmarkIcon } from "lucide-react";
 import type { Policy } from "../types";
 
 interface PolicyCardProps {
@@ -13,8 +12,8 @@ interface PolicyCardProps {
 export function PolicyCard({
   policy,
   onClick,
-  onSave,
-  isSaved,
+  onSave: _onSave,
+  isSaved: _isSaved,
   className = "",
 }: PolicyCardProps) {
   const keywords: string[] = Array.isArray(policy.tags)
