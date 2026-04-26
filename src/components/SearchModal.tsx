@@ -1,7 +1,7 @@
-import React, { useState } from "react";
 import { XIcon } from "lucide-react";
 import { HoneyDdukCharacter } from "./HoneyDdukCharacter";
 import { REGIONS, CATEGORIES } from "../data";
+import { useState } from "react";
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
