@@ -1,4 +1,3 @@
-import React from "react";
 interface HoneyDdukCharacterProps {
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
