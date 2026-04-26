@@ -1,4 +1,3 @@
-import React from "react";
 import { MessageCircleIcon } from "lucide-react";
 import { HoneyDdukCharacter } from "./HoneyDdukCharacter";
 interface LoginPromptModalProps {
