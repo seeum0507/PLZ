@@ -1,41 +1,44 @@
 import React from "react";
-import { BookmarkIcon } from "lucide-react";
+import { BookmarkIcon, LogOutIcon } from "lucide-react";
 import { PolicyCard } from "../components/PolicyCard";
 import { HoneyDdukCharacter } from "../components/HoneyDdukCharacter";
-import type { Policy } from "../types";
-
-interface KakaoUser {
-  id: string;
-  email: string;
-  nickname?: string;
-}
+import { bookmarkToPolicy } from "../lib/mapper";
+import type { KakaoUser, Policy } from "../types";
+import type { ApiBookmark } from "../lib/api";
 
 interface MyPageProps {
   user: KakaoUser;
-  savedPolicies: number[];
-  allPolicies: Policy[];
-  onPolicyClick: (id: number) => void;
-  onSave: (id: number, e: React.MouseEvent) => void;
+  bookmarks: ApiBookmark[];
+  savedPolicyIds: string[];
+  onPolicyClick: (policy: Policy) => void;
+  onSave: (policy: Policy, e: React.MouseEvent) => void;
+  onLogout: () => void;
 }
 
 export function MyPage({
   user,
-  savedPolicies,
-  allPolicies,
+  bookmarks,
+  savedPolicyIds,
   onPolicyClick,
   onSave,
+  onLogout,
 }: MyPageProps) {
-  const savedPolicyList = allPolicies.filter((p) =>
-    savedPolicies.includes(p.id)
-  );
+  const savedPolicyList = bookmarks.map(bookmarkToPolicy);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-warm-50 pb-24">
       <main className="max-w-6xl mx-auto px-6 pt-10">
-        {/* 프로필 카드 */}
-        <div className="bg-white rounded-3xl shadow-card mb-10 animate-fade-in-up py-10 flex items-center justify-center">
+        <div className="bg-white rounded-3xl shadow-card mb-10 animate-fade-in-up py-10 flex items-center justify-center relative">
+          <button
+            onClick={onLogout}
+            className="absolute top-5 right-6 flex items-center gap-1.5 text-sm text-warm-400 hover:text-warm-700 transition-colors"
+            aria-label="로그아웃"
+          >
+            <LogOutIcon size={16} />
+            <span className="font-body">로그아웃</span>
+          </button>
+
           <div className="flex flex-col items-center">
-            {/* 캐릭터 + 원형 노란 배경 */}
             <div className="flex items-end justify-center mb-0">
               <div
                 className="relative flex items-end justify-center"
@@ -60,7 +63,6 @@ export function MyPage({
               </div>
             </div>
 
-            {/* 이름 + 이메일 노란 박스 */}
             <div
               className="flex flex-col items-center py-6 px-16 rounded-2xl -mt-6"
               style={{ backgroundColor: "#FFFACA" }}
@@ -75,13 +77,12 @@ export function MyPage({
           </div>
         </div>
 
-        {/* 저장한 정책 섹션 */}
         <div className="animate-fade-in-up stagger-1">
           <div className="flex items-center gap-3 mb-8 border-b border-warm-200 pb-4">
             <BookmarkIcon size={26} className="text-honey-500" />
             <h3 className="font-heading text-2xl text-warm-800">저장한 정책</h3>
             <span className="bg-honey-100 text-honey-700 text-base font-bold px-3 py-0.5 rounded-full ml-1">
-              {savedPolicyList.length}
+              {bookmarks.length}
             </span>
           </div>
 
@@ -89,16 +90,16 @@ export function MyPage({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {savedPolicyList.map((policy, index) => (
                 <div
-                  key={policy.id}
+                  key={policy.plcyNo ?? index}
                   className={`animate-fade-in-up stagger-${
                     (index % 5) + 1
                   } h-full`}
                 >
                   <PolicyCard
                     policy={policy}
-                    onClick={() => onPolicyClick(policy.id)}
-                    onSave={(e) => onSave(policy.id, e)}
-                    isSaved={true}
+                    onClick={() => onPolicyClick(policy)}
+                    onSave={(e) => onSave(policy, e)}
+                    isSaved={savedPolicyIds.includes(policy.plcyNo ?? "")}
                     className="h-full flex flex-col"
                   />
                 </div>
