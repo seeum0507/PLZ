@@ -1,4 +1,3 @@
-import React from "react";
 import { HoneyDdukCharacter } from "./HoneyDdukCharacter";
 
 export function Footer() {
