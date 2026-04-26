@@ -1,36 +1,67 @@
 import React from "react";
 import { PolicyCard } from "../components/PolicyCard";
 import { HoneyDdukCharacter } from "../components/HoneyDdukCharacter";
-import { Policy } from "../types";
-import { MOCK_POLICIES, CATEGORIES } from "../data";
+import type { Policy } from "../types";
+import { usePolicies } from "../hooks/useApi";
+
 interface PolicyListPageProps {
   region: string;
   category: string;
-  onPolicyClick: (id: number) => void;
-  onSave: (id: number, e: React.MouseEvent) => void;
-  savedPolicies: number[];
+  onPolicyClick: (policy: Policy) => void;
+  onSave: (policy: Policy, e: React.MouseEvent) => void;
+  savedPolicyIds: string[];
 }
+
 export function PolicyListPage({
   region,
   category,
   onPolicyClick,
   onSave,
-  savedPolicies,
+  savedPolicyIds,
 }: PolicyListPageProps) {
-  // Filter mock data based on region and category
-  const filteredPolicies = MOCK_POLICIES.filter((p) => {
-    const matchRegion =
-      region === "전국" || p.region === region || p.region === "전국";
-    const matchCategory = category === "전체" || p.tags.includes(category);
-    return matchRegion && matchCategory;
-  });
+  const {
+    data: policies = [],
+    isLoading,
+    isError,
+    error,
+  } = usePolicies(region, category);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[50vh] gap-4">
+        <HoneyDdukCharacter size="lg" animate />
+        <p className="font-heading text-2xl text-warm-400 animate-pulse">
+          정책을 불러오는 중... 🍯
+        </p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[50vh] gap-4">
+        <div className="opacity-50 grayscale">
+          <HoneyDdukCharacter size="lg" />
+        </div>
+        <p className="font-heading text-2xl text-warm-400">
+          정책을 불러오지 못했어요 😢
+        </p>
+        <p className="font-body text-sm text-red-400 bg-red-50 px-4 py-2 rounded-xl max-w-md text-center break-all">
+          {(error as Error)?.message ?? "알 수 없는 오류"}
+        </p>
+        <p className="font-body text-base text-warm-300">
+          잠시 후 다시 시도해주세요.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-warm-50 pb-16">
       <main className="max-w-6xl mx-auto px-6 pt-8">
-        {/* AI Summary Banner */}
         <div className="bg-honey-100 rounded-2xl p-5 md:p-6 mb-8 flex items-center gap-4 shadow-sm animate-fade-in-up">
           <HoneyDdukCharacter size="md" animate />
-          <p className="font-body text-warm-800 text-base md:text-lg leading-relaxed">
+          <p className="font-heading text-warm-800 text-base md:text-lg leading-relaxed">
             <strong className="font-heading text-xl text-honey-600">
               {region}
             </strong>{" "}
@@ -40,32 +71,15 @@ export function PolicyListPage({
             )}
             정책이{" "}
             <strong className="font-heading text-xl text-honey-600">
-              {filteredPolicies.length}개
+              {policies.length}개
             </strong>{" "}
             있어요! ✨
           </p>
         </div>
 
-        {/* Filter Chips */}
-        <div className="flex flex-wrap gap-2 md:gap-3 mb-8">
-          {CATEGORIES.map((cat) => (
-            <div
-              key={cat}
-              className={`px-5 py-2 rounded-full text-sm md:text-base font-medium transition-colors cursor-default ${
-                category === cat
-                  ? "bg-warm-800 text-white shadow-md"
-                  : "bg-white text-warm-500 border border-warm-200 hover:bg-warm-50"
-              }`}
-            >
-              {cat}
-            </div>
-          ))}
-        </div>
-
-        {/* Policy List Grid */}
-        {filteredPolicies.length > 0 ? (
+        {policies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPolicies.map((policy, index) => (
+            {policies.map((policy, index) => (
               <div
                 key={policy.id}
                 className={`animate-fade-in-up stagger-${
@@ -74,9 +88,9 @@ export function PolicyListPage({
               >
                 <PolicyCard
                   policy={policy}
-                  onClick={() => onPolicyClick(policy.id)}
-                  onSave={(e) => onSave(policy.id, e)}
-                  isSaved={savedPolicies.includes(policy.id)}
+                  onClick={() => onPolicyClick(policy)}
+                  onSave={(e) => onSave(policy, e)}
+                  isSaved={savedPolicyIds.includes(policy.plcyNo ?? "")}
                   className="h-full flex flex-col"
                 />
               </div>
