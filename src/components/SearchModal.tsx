@@ -8,7 +8,7 @@ interface SearchModalProps {
   onSearch: (region: string, category: string) => void;
 }
 export function SearchModal({ isOpen, onClose, onSearch }: SearchModalProps) {
-  const [selectedRegion, setSelectedRegion] = useState("전국");
+  const [selectedRegion, setSelectedRegion] = useState("전체");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   if (!isOpen) return null;
   return (
