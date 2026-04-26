@@ -1,6 +1,4 @@
-import React from "react";
 import { ArrowLeftIcon } from "lucide-react";
-import { HoneyDdukCharacter } from "./HoneyDdukCharacter";
 import Logo from "../assets/logo.svg";
 
 type PageState = "main" | "policyList" | "policyDetail" | "myPage";
