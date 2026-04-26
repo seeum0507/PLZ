@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   UsersIcon,
   CoinsIcon,
@@ -26,11 +26,9 @@ export function PolicyDetailPage({
   isLoggedIn,
   onLoginClick,
 }: PolicyDetailPageProps) {
-  const {
-    data: detailPolicy,
-    isLoading,
-    error,
-  } = usePolicyDetail(policy.plcyNo ?? null);
+  const { data: detailPolicy, isLoading } = usePolicyDetail(
+    policy.plcyNo ?? null
+  );
 
   const p: Policy = detailPolicy
     ? {
