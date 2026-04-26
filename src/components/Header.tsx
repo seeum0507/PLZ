@@ -29,7 +29,6 @@ export function Header({
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-honey-100 shadow-sm">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Left: Logo & Back */}
         <div className="flex items-center gap-4">
           {showBack && (
             <button
@@ -56,7 +55,6 @@ export function Header({
           )}
         </div>
 
-        {/* Right: Web Navigation */}
         <nav className="hidden sm:flex items-center gap-8">
           <button
             onClick={() => onNavigate("main")}
@@ -86,7 +84,6 @@ export function Header({
             )}
           </button>
 
-          {/* 로그인 상태에 따라 버튼 전환 */}
           {isLoggedIn ? (
             <button
               onClick={() => onNavigate("myPage")}
@@ -111,7 +108,6 @@ export function Header({
           )}
         </nav>
 
-        {/* Mobile Nav */}
         <div className="sm:hidden flex items-center gap-4">
           <button
             onClick={onSearchClick}
