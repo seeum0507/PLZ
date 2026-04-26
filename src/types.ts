@@ -4,7 +4,7 @@ export interface Policy {
   name: string;
   summary: string;
   description: string;
-  tags: string[];
+  tags: string | string[];
   region: string;
   details: string;
   min_age?: number | null;
